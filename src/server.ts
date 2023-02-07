@@ -1,16 +1,16 @@
+import express from 'express';
 import { PrismaClient } from "@prisma/client";
-import { Request, Response } from "express";
+import cors from 'cors';
 
 const prisma = new PrismaClient({
   log: ["query"],
 });
 
-const express = require("express");
-
 const app = express();
 const port = 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors())
 
 interface Produto {
   nome: String;
@@ -18,11 +18,11 @@ interface Produto {
   url_image: String;
 }
 
-app.get("/", async (req: Request, res: Response) => {
+app.get("/", async (req, res) => {
   res.json("Hello World!");
 });
 
-app.get("/produtos", async (req: Request ,res: Response) => {
+app.get("/produtos", async (req, res) => {
   try {
     var busca = await prisma.produto.findMany();
     res.json(busca);
@@ -31,7 +31,7 @@ app.get("/produtos", async (req: Request ,res: Response) => {
   }
 });
 
-app.get("/produto/:id", async (req: Request, res: Response) => {
+app.get("/produto/:id", async (req, res) => {
   try {
     var busca = await prisma.produto.findUnique({
       where: {
@@ -44,7 +44,7 @@ app.get("/produto/:id", async (req: Request, res: Response) => {
   }
 });
 
-app.post("/produto", async (req: Request, res: Response) => {
+app.post("/produto", async (req, res) => {
   try {
     var adicionar = await prisma.produto.create({
       data: {
@@ -59,7 +59,7 @@ app.post("/produto", async (req: Request, res: Response) => {
   }
 });
 
-app.put("/produto/:id", async (req: Request, res: Response) => {
+app.put("/produto/:id", async (req, res) => {
   try {
     var alterar = await prisma.produto.update({
       where: {
@@ -77,7 +77,7 @@ app.put("/produto/:id", async (req: Request, res: Response) => {
   }
 });
 
-app.delete("/produto/:id", async (req: Request, res: Response) => {
+app.delete("/produto/:id", async (req, res) => {
   try {
     var apagar = await prisma.produto.delete({
       where: {
